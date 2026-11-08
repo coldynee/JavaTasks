@@ -1,17 +1,18 @@
 package by.coldynee;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import by.coldynee.homework_1.CustomHashMap;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        //homework 1
+        CustomHashMap<Integer, String> map = new CustomHashMap<>(10);
+        map.put(1, "one");
+        map.put(2, "two");
+        System.out.println(map.get(1));
+        System.out.println(map.get(2));
+        map.remove(1);
+        map.remove(2);
+        System.out.println(map.get(1));
+        System.out.println(map.get(2));
     }
 }
