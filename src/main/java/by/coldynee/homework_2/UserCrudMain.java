@@ -87,8 +87,11 @@ public class UserCrudMain {
                     default:
                         System.out.println("Ожидается число 0-5, попробуйте снова");
                 }
+
+            } catch (NumberFormatException e){
+                System.out.println("Введено некорректное число");
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Неверный ввод, ошибка " + e.getLocalizedMessage());
             } catch (Exception e) {
                 System.out.println("Ошибка при работе с базой данных: " + e.getLocalizedMessage());
             }
