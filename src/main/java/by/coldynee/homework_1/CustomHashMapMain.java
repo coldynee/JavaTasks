@@ -1,10 +1,7 @@
-package by.coldynee;
+package by.coldynee.homework_1;
 
-import by.coldynee.homework_1.CustomHashMap;
-
-public class Main {
+public class CustomHashMapMain {
     public static void main(String[] args) {
-        //homework 1
         CustomHashMap<Integer, String> map = new CustomHashMap<>(10);
         map.put(1, "one");
         map.put(2, "two");
