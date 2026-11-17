@@ -34,6 +34,13 @@ public interface UserDao {
      */
     List<User> findAll();
     /**
+     * Ищет пользователя по его email.
+     *
+     * @param email email пользователя
+     * @return {@link Optional} с пользователем, если он найден, или пустой {@link Optional}
+     */
+    Optional<User> findByEmail(String email);
+    /**
      * Обновляет данные существующего пользователя.
      *
      * @param user пользователь с обновлёнными данными (id должен быть установлен)

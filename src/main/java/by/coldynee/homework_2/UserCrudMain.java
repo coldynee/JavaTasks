@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class UserCrudMain {
     public static void main(String[] args) {
         UserDao userDao = new UserDaoProcessor();
+        UserServiceInterface userService = new UserService(userDao);
         Scanner scanner = new Scanner(System.in);
         boolean isRunning = true;
 
@@ -37,22 +38,24 @@ public class UserCrudMain {
                         int age = Integer.parseInt(scanner.nextLine());
 
                         User newUser = new User(name, email, age);
-                        userDao.save(newUser);
-                        System.out.println("Пользователь создан, ID: " + newUser.getId());
+                        User savedUser = userService.registerUser(newUser);
+                        System.out.println("Пользователь создан, ID: " + savedUser.getId());
                         break;
 
                     case "2":
                         System.out.print("Введите ID для поиска: ");
                         Long searchId = Long.parseLong(scanner.nextLine());
-                        userDao.findById(searchId).ifPresentOrElse(
-                                u -> System.out.println("Пользователь найден: " + u),
-                                () -> System.out.println("Пользователь с ID " + searchId + " не найден")
-                        );
+                        try {
+                            User foundUser = userService.getUserById(searchId);
+                            System.out.println("Пользователь найден: " + foundUser);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
                         break;
 
                     case "3":
                         System.out.println("Список всех пользователей:");
-                        List<User> users = userDao.findAll();
+                        List<User> users = userService.getAllUsers();
                         if (users.isEmpty()) {
                             System.out.println("Список пуст");
                         } else {
@@ -63,19 +66,16 @@ public class UserCrudMain {
                     case "4":
                         System.out.print("Введите ID пользователя для обновления: ");
                         Long updateId = Long.parseLong(scanner.nextLine());
-                        userDao.findById(updateId).ifPresentOrElse(u -> {
-                                    System.out.println("Текущий возраст: " + u.getAge() + ", Введите новый: ");
-                                    int newAge = Integer.parseInt(scanner.nextLine());
-                                    u.setAge(newAge);
-                                    userDao.update(u);
-                                    System.out.println("Возраст обновлен");
-                                }, () -> System.out.println("Пользователь не найден"));
+                        System.out.print("Введите новый возраст: ");
+                        int newAge = Integer.parseInt(scanner.nextLine());
+                        userService.updateAge(updateId, newAge);
+                        System.out.println("Возраст обновлен");
                         break;
 
                     case "5":
                         System.out.print("Введите ID пользователя для удаления: ");
                         Long deleteId = Long.parseLong(scanner.nextLine());
-                        userDao.delete(deleteId);
+                        userService.deleteUser(deleteId);
                         System.out.println("Пользователь удалён");
                         break;
 

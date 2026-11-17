@@ -69,6 +69,17 @@ public class UserDaoProcessor implements UserDao{
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<User> users = session.createQuery(
+                            "FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getResultList();
+            return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
+        }
+    }
+
+    @Override
     public void update(User user) {
         validate(user);
         Transaction tx = null;
@@ -78,7 +89,7 @@ public class UserDaoProcessor implements UserDao{
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to update user " + e);
+            throw new RuntimeException("Failed to update user " + e.getMessage(), e);
         }
     }
 
@@ -94,7 +105,7 @@ public class UserDaoProcessor implements UserDao{
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
-            throw new RuntimeException("Failed to delete user " + e);
+            throw new RuntimeException("Failed to delete user " + e.getMessage(), e);
         }
     }
 }

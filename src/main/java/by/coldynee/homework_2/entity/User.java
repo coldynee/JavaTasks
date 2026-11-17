@@ -23,7 +23,7 @@ public class User {
     /**
      * Email пользователя. Должен быть уникальным в рамках таблицы.
      */
-    @NotBlank(message = "Email не моежт быть пустым")
+    @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Некорректный формат email")
     @Column(nullable = false, unique = true, length = 150)
     private String email;
