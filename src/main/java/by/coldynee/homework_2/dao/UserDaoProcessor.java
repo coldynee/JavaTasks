@@ -4,6 +4,7 @@ import by.coldynee.homework_2.entity.User;
 import by.coldynee.homework_2.util.HibernateUtil;
 import jakarta.validation.*;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -21,6 +22,15 @@ import java.util.stream.Collectors;
 public class UserDaoProcessor implements UserDao{
 
     private static final Validator validator;
+    private final SessionFactory sessionFactory;
+
+    public UserDaoProcessor() {
+        this.sessionFactory = HibernateUtil.getSessionFactory();
+    }
+
+    public UserDaoProcessor(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     static {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()){
@@ -42,7 +52,7 @@ public class UserDaoProcessor implements UserDao{
     public User save(User user) {
         validate(user);
         Transaction tx = null;
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
             session.persist(user);
             tx.commit();
@@ -55,7 +65,7 @@ public class UserDaoProcessor implements UserDao{
 
     @Override
     public Optional<User> findById(Long id) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
             return Optional.ofNullable(user);
         }
@@ -63,14 +73,14 @@ public class UserDaoProcessor implements UserDao{
 
     @Override
     public List<User> findAll() {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM User", User.class).getResultList();
         }
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             List<User> users = session.createQuery(
                             "FROM User u WHERE u.email = :email", User.class)
                     .setParameter("email", email)
@@ -83,7 +93,7 @@ public class UserDaoProcessor implements UserDao{
     public void update(User user) {
         validate(user);
         Transaction tx = null;
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
             session.merge(user);
             tx.commit();
@@ -96,7 +106,7 @@ public class UserDaoProcessor implements UserDao{
     @Override
     public void delete(Long id) {
         Transaction tx = null;
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try(Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
             User user = session.get(User.class, id);
             if (user != null) {
